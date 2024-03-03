@@ -2,42 +2,21 @@
 #include "VerticesLayout.h"
 #include "Picture.h"
 #include "DrawGraph.h"
+#include "Frame.h"
+#include "Number.h"
 
 #include <iostream>
 #include <fstream>
 #include <string> 
 #include <vector>
 
-
-
-
-
-
-// кажется проблема в том что изначальное поле довольно маленькое (см сайт)
-// короче думаю я не буду учитывать слишком дальние вершины 
-// и изначально сделаю оооооочень большое поле и пусть W и L в алгоритме  именно там где ограничиваются x y
-// опр-ся на основе самого больших dx dy 
-// 
-// 
-//
-
-
-
-
-
-
-
+#define ADDPIXELS     10
 
 
 
 bool readFile (const char* filename, int& vertNum, int& edgeNum, std::vector <std::pair <int, int>> &edges);
-void setVertPos(std::vector <Vertex>& V, int width, int height, int vertNum);
-/*
-пусть   <=100 вершин - 200 * 150
-		<=300 и >100 - 300 * 200
-		>300 и <=500 - 500 * 400
-		>500 & <=1000 - ○○ * ○○
-*/
+void setVertPos(std::vector <Vertex>& V, int maxWidth, int maxHeight, int vertNum);
+
 int main()
 {
 	const char* file = "sample.txt";
@@ -52,15 +31,24 @@ int main()
 
 	std::vector <Vertex> vertPos(vertNum);
 
-	// setting arbitrary positions of vertices  
-	setVertPos(vertPos, 500, 300, vertNum);
+	// setting arbitrary positions of vertices (must be a bit far from each other for good layout)
+	setVertPos(vertPos, 300, 300, vertNum);
 
-	FRmethod(vertPos, edges, 100, 100);
+	Frame frame;
+	// countong coordinates of vertices
+	FRmethod(vertPos, edges, 200, 200, 300, 300, frame);
 
-	unsigned char* picture = drawGraph(edges, vertPos, 100, 100, 10);
+	// counting width and height of graph
+	int maxX = static_cast<int>(frame.maxX + 1);
+	int maxY = static_cast<int>(frame.maxY + 1);
+	int minX = static_cast<int>(frame.minX);
+	int minY = static_cast<int>(frame.minY);
+	int width = maxX - minX;
+	int height = maxY - minY;
 
-	makePicture("graph1.bmp", picture, 100 + 10 * 2, 100 + 10 * 2);
+	unsigned char* picture = drawGraph(edges, vertPos, width, height, ADDPIXELS);
 
+	makePicture("graph.bmp", picture, width, height, ADDPIXELS);
 
 	return 0;
 }
@@ -99,10 +87,10 @@ bool readFile(const char* filename, int& vertNum, int& edgeNum, std::vector<std:
 	return 1;
 }
 
-void setVertPos(std::vector<Vertex>& V, int width, int height, int vertNum)
+void setVertPos(std::vector<Vertex>& V, int maxWidth, int maxHeight, int vertNum)
 {
 	for (int i = 0; i < vertNum; i++) {
-		V[i].x = static_cast<double>(rand() % 100);
-		V[i].y = static_cast<double>(rand() % 100);
+		V[i].x = static_cast<double>(rand() % maxWidth);
+		V[i].y = static_cast<double>(rand() % maxHeight);
 	}
 }

@@ -1,14 +1,20 @@
 #include "VerticesLayout.h"
 
 #include <iostream>
-void FRmethod(std::vector <Vertex>& vertices, std::vector <std::pair <int, int>>& edges, int width, int height)
+void FRmethod(std::vector <Vertex>& vertices, const std::vector <std::pair <int, int>>& edges, int desiredWidth, int desiredHeight, int maxWidth, int maxHeight, Frame& frame)
 {
-	int vertNum = vertices.size();
+	size_t vertNum = vertices.size();
+
 	// optimal distance between vertices(determine experimentally)
-	double k = 0.7 * sqrt((width * height) / (vertNum * 1.0));
+	double k = 0.8 * sqrt((desiredWidth * desiredHeight) / (vertNum * 1.0));
+
 	// determine max displacement in iteration
-	double t = 10.0;//  determine experimentally
+	double t = k * 3;//  determine experimentally
 	int iterations = 50;
+
+	frame.minX = maxWidth * 1.0;
+	frame.minY = maxHeight * 1.0;
+
 	for (int ii = 0; ii < iterations; ii++) {
 		std::vector <std::pair<double, double>> displacement(vertNum); 
 
@@ -24,19 +30,19 @@ void FRmethod(std::vector <Vertex>& vertices, std::vector <std::pair <int, int>>
 					double delta = sqrt(dx * dx + dy * dy);
 
 					//considering only neighbouring vertices for decreasing time complexity
-					if (delta > 0.0 && delta <= 2 * k) {
+					if (delta > 0.0 && delta <= 4 * k) {
 
 						displacement[n].first += repForce(k, delta, dx / delta);
 						displacement[n].second += repForce(k, delta, dy / delta);
 					}
-					else {
+					else if (delta <= 0) {
 						std::cout << "division by 0!\n";
 						std::cout << "repulsive\n";
 					}
 				}
 			}
 		}
-
+		
 		// calculate attractive forces
 		for (int i = 0; i < edges.size(); i++) {
 
@@ -65,22 +71,39 @@ void FRmethod(std::vector <Vertex>& vertices, std::vector <std::pair <int, int>>
 
 		}
 
+		// move vertices
 		for (int i = 0; i < vertNum; i++) {
+
 			double sign = 1.0;
 			if (displacement[i].first < 0) {
 				sign = -1.0;
 			}
+
+			// temperature limits displacement
 			vertices[i].x += sign * minModule(t, displacement[i].first);
 			vertices[i].y += sign * minModule(t, displacement[i].second);
 
-			vertices[i].x = max(0.0, min((width - 1) * 1.0, vertices[i].x));
-			vertices[i].y = max(0.0, min((height - 1) * 1.0, vertices[i].y));
+			// consider the frame
+			vertices[i].x = max(0.0, min((maxWidth - 1) * 1.0, vertices[i].x));
+			vertices[i].y = max(0.0, min((maxHeight - 1) * 1.0, vertices[i].y));
 
+			if (ii == iterations - 1) {
+				frame.maxX = max(vertices[i].x, frame.maxX);
+				frame.maxY = max(vertices[i].y, frame.maxY);
+				frame.minX = min(vertices[i].x, frame.minX);
+				frame.minY = min(vertices[i].y, frame.minY);
+
+			}
 		}
 		//decreasing the temperature
-		if (t - 0.05 > 0) {
-			t -= 0.05; 
-		}
+		cool(t, ii, iterations);
+	}
+
+	// moving vertices closer to origin of coordinates
+	for (int i = 0; i < vertNum; i++) {
+		vertices[i].x -= frame.minX;
+		vertices[i].y -= frame.minY;
+
 	}
 }
 
@@ -117,4 +140,18 @@ double max(double a, double b)
 		return a;
 	}
 	return b;
+}
+
+double cool(double& t, int ii, int iterations)
+{
+	// 1st phase; temperature changes rapidly
+	if (ii < iterations / 2) {
+		t = t / (1.0 + ii / (iterations * 1.0));
+	}
+	// 2nd phase; temperature is constant and low
+	else {
+		t = 5.0;
+	}
+
+	return t;
 }

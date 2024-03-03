@@ -1,9 +1,12 @@
 #include "DrawGraph.h"
+#include "Number.h"
+
 #include <iostream>
 
-unsigned char* drawGraph(std::vector<std::pair<int, int>>& edges, std::vector<Vertex>& vertices, int width, int height, const int ADDPIXELS)
+unsigned char* drawGraph(const std::vector<std::pair<int, int>>& edges, std::vector<Vertex>& vertices, int width, int height, const int ADDPIXELS)
 {
 	int bytesPerPixel = 3;
+
 	int stride = (((width + ADDPIXELS * 2) * bytesPerPixel + 3) / 4) * 4;    // enlarged width in bytes, multiple of 4
 
 	// create buffer
@@ -15,12 +18,17 @@ unsigned char* drawGraph(std::vector<std::pair<int, int>>& edges, std::vector<Ve
 		buffer[i] = (unsigned char)255;
 	}
 
-	// draw
+	// draw all vertices
 	drawVertices(vertices, buffer, stride, ADDPIXELS, bufferSize);
 
 	// number vertices
+	for (int i = 0; i < vertices.size(); i++) {
+		int x = static_cast<int>(vertices[i].x);
+		int y = static_cast<int>(vertices[i].y);
+		drawNumber(i + 1, x, y, buffer, bufferSize, width, height, ADDPIXELS);
+	}
 
-	// darw edges
+	// draw edges
 	drawEdges(buffer, vertices, edges, stride, ADDPIXELS, bufferSize);
 	return buffer;
 }
@@ -33,7 +41,6 @@ void drawVertices(std::vector<Vertex>& vertices, unsigned char* buffer, int stri
 
 		// draw vertex 
 		drawCircle(buffer, x, y, ADDPIXELS, stride, bufferSize);
-		// number vertex
 
 	}
 }
@@ -69,7 +76,7 @@ void drawCircle(unsigned char* buffer, int x0, int y0, const int ADDPIXELS, int 
 
 
 
-void drawEdges(unsigned char* buffer, std::vector <Vertex>& vertices, std::vector <std::pair <int, int>>& edges, int stride, const int ADDPIXELS, int bufferSize)
+void drawEdges(unsigned char* buffer, std::vector <Vertex>& vertices, const  std::vector <std::pair <int, int>>& edges, int stride, const int ADDPIXELS, int bufferSize)
 {
 	for (std::pair <int, int> edge : edges) {
 		int vertexNum = edge.first - 1;

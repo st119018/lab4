@@ -3,14 +3,14 @@
 #include <fstream>
 #include <string>
 
-void makePicture(const char* filename, unsigned char* buffer, int Largewidth, int Largeheight)
+void makePicture(const char* filename, unsigned char* buffer, int width, int height, const int ADDPIXELS)
 {
 	//opening file
 	std::ofstream graphPicture(filename, std::ofstream::binary);
 	BITMAPFILEHEADER Header{};
 	BITMAPINFOHEADER Info{};
-	Info.biWidth = Largewidth;
-	Info.biHeight = Largeheight;
+	Info.biWidth = width + ADDPIXELS * 2;
+	Info.biHeight = height + ADDPIXELS * 2;
 	int stride = ((Info.biWidth * 3 + 3) / 4) * 4;
 	Header.bfSize = 14 + Info.biSize + Info.biHeight * stride;
 	graphPicture.write(reinterpret_cast<char*>(&Header), sizeof(BITMAPFILEHEADER));

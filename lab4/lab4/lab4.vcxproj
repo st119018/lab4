@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClInclude Include="BMPheader.h" />
     <ClInclude Include="DrawGraph.h" />
+    <ClInclude Include="Frame.h" />
     <ClInclude Include="Number.h" />
     <ClInclude Include="Picture.h" />
     <ClInclude Include="VerticesLayout.h" />
