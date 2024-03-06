@@ -6,11 +6,11 @@ void FRmethod(std::vector <Vertex>& vertices, const std::vector <std::pair <int,
 	size_t vertNum = vertices.size();
 
 	// optimal distance between vertices(determine experimentally)
-	double k = 0.8 * sqrt((desiredWidth * desiredHeight) / (vertNum * 1.0));
+	double k = 0.9 * sqrt((desiredWidth * desiredHeight) / (vertNum * 1.0));
 
 	// determine max displacement in iteration
 	double t = k * 3;//  determine experimentally
-	int iterations = 50;
+	int iterations = 100;
 
 	frame.minX = maxWidth * 1.0;
 	frame.minY = maxHeight * 1.0;
@@ -145,12 +145,13 @@ double max(double a, double b)
 double cool(double& t, int ii, int iterations)
 {
 	// 1st phase; temperature changes rapidly
-	if (ii < iterations / 2) {
+	if (ii < iterations / 3) {
 		t = t / (1.0 + ii / (iterations * 1.0));
 	}
+
 	// 2nd phase; temperature is constant and low
-	else {
-		t = 5.0;
+	if (t <= 10.0){
+		t = 10.0;
 	}
 
 	return t;

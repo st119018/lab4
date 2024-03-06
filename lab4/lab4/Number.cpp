@@ -5,27 +5,45 @@ void drawNumber(int number, int x, int y, unsigned char* buffer, int bufferSize,
 	int n = number;
 	int x0 = x;
 	int y0 = y;
-	int digits = 0;
+	int countDigits = 0;
 	while (n > 0)
 	{
-		digits++;
+		countDigits++;
 		n /= 10;
 	}
 
-	if (width - x < (digits * 12) - ADDPIXELS) {
-		x0 = x - digits * 12;
-	}
-	else {
-		x0 += 3;
-	}
-	if (y < 24 - ADDPIXELS) {
-		y0 = y + 13;
-	}
-	else {
-		y0 -= 3;
-	}
+	int digits[4]{};
+	n = number;
+	int i = countDigits - 1;
 
-	drawDigit(number, x0, y0, buffer, bufferSize, width, ADDPIXELS);
+	while (i != -1) {
+		digits[i] = n % 10;
+		n /= 10;
+		i--;
+	}
+	i = countDigits;
+
+	while (i > 0) {
+		if (width - x < (countDigits * 12) - ADDPIXELS) {
+			x0 = x - 6 - i * 9;
+		}
+		else if (i == countDigits) {
+			x0 = x0 + 3;
+		}
+		else { 
+			x0 += 9; 
+		}
+
+		if (y < 24 - ADDPIXELS) {
+			y0 = y + 13;
+		}
+		else {
+			y0 = y - 3;
+		}
+
+		drawDigit(digits[countDigits - i], x0, y0, buffer, bufferSize, width, ADDPIXELS);
+		i--;
+	}
 }
 
 void drawDigit(int num, int x, int y, unsigned char* buffer, int bufferSize, int width, int ADDPIXELS)
@@ -51,8 +69,8 @@ void drawDigit(int num, int x, int y, unsigned char* buffer, int bufferSize, int
 		1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1,
 		1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1,
 		1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1,
+		1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1,
 		1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1,
 		1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1,
 		1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1,
 		1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1},
