@@ -29,7 +29,7 @@ unsigned char* drawGraph(const std::vector<std::pair<int, int>>& edges, std::vec
 	}
 
 	// draw edges
-	drawEdges(buffer, vertices, edges, stride, ADDPIXELS, bufferSize);
+	drawEdges(buffer, vertices, edges, width, height, stride, ADDPIXELS, bufferSize);
 	return buffer;
 }
 
@@ -76,16 +76,23 @@ void drawCircle(unsigned char* buffer, int x0, int y0, const int ADDPIXELS, int 
 
 
 
-void drawEdges(unsigned char* buffer, std::vector <Vertex>& vertices, const  std::vector <std::pair <int, int>>& edges, int stride, const int ADDPIXELS, int bufferSize)
+void drawEdges(unsigned char* buffer, std::vector <Vertex>& vertices, const  std::vector <std::pair <int, int>>& edges, int width, int height, int stride, const int ADDPIXELS, int bufferSize)
 {
 	for (std::pair <int, int> edge : edges) {
-		int vertexNum = edge.first - 1;
-		int x1 = static_cast<int>(vertices[vertexNum].x);
-		int y1 = static_cast<int>(vertices[vertexNum].y);
-		vertexNum = edge.second - 1;
-		int x2 = static_cast<int>(vertices[vertexNum].x);
-		int y2 = static_cast<int>(vertices[vertexNum].y);
-		drawLine(buffer, x1, y1, x2, y2, stride, ADDPIXELS, bufferSize);
+		int vertexNum1 = edge.first - 1;
+		int x1 = static_cast<int>(vertices[vertexNum1].x);
+		int y1 = static_cast<int>(vertices[vertexNum1].y);
+		int vertexNum2 = edge.second - 1;
+		int x2 = static_cast<int>(vertices[vertexNum2].x);
+		int y2 = static_cast<int>(vertices[vertexNum2].y);
+
+		// consider loops
+		if (vertexNum1 == vertexNum2) {
+			drawLoop(buffer, x1, y1, width, height, ADDPIXELS, stride, bufferSize);
+		}
+		else {
+			drawLine(buffer, x1, y1, x2, y2, stride, ADDPIXELS, bufferSize);
+		}
 	}
 
 }
@@ -126,5 +133,51 @@ void drawPixel(unsigned char* buffer, int x, int y, int stride, const int ADDPIX
 	}
 	else {
 		std::cout << "buffer out of range!\n";
+	}
+}
+
+void drawLoop(unsigned char* buffer, int x0, int y0, int width, int height, const int ADDPIXELS, int stride, int bufferSize)
+{
+	// consider frame
+	if (x0 < 12) {
+		x0 += 8;
+	}
+	else {
+		x0 -= 8;
+	}
+	if (y0 > height - 12) {
+		y0 -= 8;
+	}
+	else {
+		y0 += 8;
+	}
+
+	int radius = 6;
+	int x = 0;
+	int y = radius;
+	int delta = 1 - 2 * radius;
+	int error = 0;
+	// drawing loop
+	while (y >= 0) {
+
+		drawPixel(buffer, x0 + x, y0 + y, stride, ADDPIXELS, bufferSize);
+		drawPixel(buffer, x0 + x, y0 - y, stride, ADDPIXELS, bufferSize);
+		drawPixel(buffer, x0 - x, y0 + y, stride, ADDPIXELS, bufferSize);
+		drawPixel(buffer, x0 - x, y0 - y, stride, ADDPIXELS, bufferSize);
+
+		error = 2 * (delta + y) - 1;
+		if (delta < 0 && error <= 0) {
+			++x;
+			delta += 2 * x + 1;
+			continue;
+		}
+		if (delta > 0 && error > 0) {
+			--y;
+			delta += 1 - 2 * y;
+			continue;
+		}
+		++x;
+		delta += 2 * (x - y);
+		--y;
 	}
 }

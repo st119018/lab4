@@ -32,11 +32,11 @@ int main()
 	std::vector <Vertex> vertPos(vertNum);
 
 	// setting arbitrary positions of vertices (must be a bit far from each other for good layout)
-	setVertPos(vertPos, 300, 300, vertNum);
+	setVertPos(vertPos, 1500, 1500, vertNum);
 
 	Frame frame;
 	// countong coordinates of vertices
-	FRmethod(vertPos, edges, 200, 200, 300, 300, frame);
+	FRmethod(vertPos, edges, 1500, 1500, 1500, 1500, frame);
 
 	// counting width and height of graph
 	int maxX = static_cast<int>(frame.maxX + 1);
@@ -48,7 +48,7 @@ int main()
 
 	unsigned char* picture = drawGraph(edges, vertPos, width, height, ADDPIXELS);
 
-	makePicture("graph.bmp", picture, width, height, ADDPIXELS);
+	makePicture("graphdesired1500.bmp", picture, width, height, ADDPIXELS);
 
 	return 0;
 }

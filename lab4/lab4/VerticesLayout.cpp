@@ -6,7 +6,7 @@ void FRmethod(std::vector <Vertex>& vertices, const std::vector <std::pair <int,
 	size_t vertNum = vertices.size();
 
 	// optimal distance between vertices(determine experimentally)
-	double k = 0.9 * sqrt((desiredWidth * desiredHeight) / (vertNum * 1.0));
+	double k = 1.1 * sqrt((desiredWidth * desiredHeight) / (vertNum * 1.0));
 
 	// determine max displacement in iteration
 	double t = k * 3;//  determine experimentally
@@ -27,6 +27,18 @@ void FRmethod(std::vector <Vertex>& vertices, const std::vector <std::pair <int,
 
 					double dx = vertices[n].x - vertices[m].x;
 					double dy = vertices[n].y - vertices[m].y;
+
+					// consider overlapping vertices
+					if (dx == 0 && dy == 0) {  
+						if (vertices[m].x + 1 < maxWidth) {
+							vertices[m].x += 1;
+							dx = -1.0;
+						}
+						else {
+							vertices[m].x -= 1;
+							dx = 1.0;
+						}
+					}
 					double delta = sqrt(dx * dx + dy * dy);
 
 					//considering only neighbouring vertices for decreasing time complexity
@@ -35,7 +47,7 @@ void FRmethod(std::vector <Vertex>& vertices, const std::vector <std::pair <int,
 						displacement[n].first += repForce(k, delta, dx / delta);
 						displacement[n].second += repForce(k, delta, dy / delta);
 					}
-					else if (delta <= 0) {
+					else if (delta <= 0.0) {
 						std::cout << "division by 0!\n";
 						std::cout << "repulsive\n";
 					}
@@ -50,7 +62,6 @@ void FRmethod(std::vector <Vertex>& vertices, const std::vector <std::pair <int,
 			int vertexNum2 = edges[i].second - 1;
 
 			// taking into account loops
-			if (vertexNum1 != vertexNum2) {
 				double dx = vertices[vertexNum1].x - vertices[vertexNum2].x;
 				double dy = vertices[vertexNum1].y - vertices[vertexNum2].y;
 				double delta = sqrt(dx * dx + dy * dy);
@@ -67,7 +78,7 @@ void FRmethod(std::vector <Vertex>& vertices, const std::vector <std::pair <int,
 					std::cout << "division by 0!\n";
 					std::cout << "attractive\n";
 				}
-			}
+			
 
 		}
 
@@ -144,14 +155,17 @@ double max(double a, double b)
 
 double cool(double& t, int ii, int iterations)
 {
-	// 1st phase; temperature changes rapidly
-	if (ii < iterations / 3) {
-		t = t / (1.0 + ii / (iterations * 1.0));
-	}
+	//// 1st phase; temperature changes rapidly
+	//if (ii < iterations / 3) {
+	//	t = t / (1.0 + ii / (iterations * 1.0));
+	//}
 
-	// 2nd phase; temperature is constant and low
-	if (t <= 10.0){
-		t = 10.0;
+	//// 2nd phase; temperature is constant and low
+	//if (t <= 10.0){
+	//	t = 10.0;
+	//}
+	if (t * 0.9 > 10.0) {
+		t *= 0.9;
 	}
 
 	return t;
