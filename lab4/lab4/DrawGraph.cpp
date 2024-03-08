@@ -1,13 +1,9 @@
 #include "DrawGraph.h"
 #include "Number.h"
 
-#include <iostream>
-
 unsigned char* drawGraph(const std::vector<std::pair<int, int>>& edges, std::vector<Vertex>& vertices, int width, int height, const int ADDPIXELS)
 {
-	int bytesPerPixel = 3;
-
-	int stride = (((width + ADDPIXELS * 2) * bytesPerPixel + 3) / 4) * 4;    // enlarged width in bytes, multiple of 4
+	int stride = (((width + ADDPIXELS * 2) * 3 + 3) / 4) * 4;    // enlarged width in bytes, multiple of 4
 
 	// create buffer
 	int bufferSize = stride * (height + ADDPIXELS * 2);
@@ -74,8 +70,6 @@ void drawCircle(unsigned char* buffer, int x0, int y0, const int ADDPIXELS, int 
 }
 
 
-
-
 void drawEdges(unsigned char* buffer, std::vector <Vertex>& vertices, const  std::vector <std::pair <int, int>>& edges, int width, int height, int stride, const int ADDPIXELS, int bufferSize)
 {
 	for (std::pair <int, int> edge : edges) {
@@ -131,19 +125,16 @@ void drawPixel(unsigned char* buffer, int x, int y, int stride, const int ADDPIX
 		buffer[byte + 1] = (unsigned char)0;
 		buffer[byte + 2] = (unsigned char)0;
 	}
-	else {
-		std::cout << "buffer out of range!\n";
-	}
 }
 
 void drawLoop(unsigned char* buffer, int x0, int y0, int width, int height, const int ADDPIXELS, int stride, int bufferSize)
 {
-	// consider frame
+	// moving centre of loop considering frame
 	if (x0 < 12) {
-		x0 += 8;
+		x0 += 7;
 	}
 	else {
-		x0 -= 8;
+		x0 -= 7;
 	}
 	if (y0 > height - 12) {
 		y0 -= 8;
@@ -152,7 +143,7 @@ void drawLoop(unsigned char* buffer, int x0, int y0, int width, int height, cons
 		y0 += 8;
 	}
 
-	int radius = 6;
+	int radius = 6; //radius of loop
 	int x = 0;
 	int y = radius;
 	int delta = 1 - 2 * radius;

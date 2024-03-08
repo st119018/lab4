@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 #include <cmath>
 
 void drawNumber(int number, int x, int y, unsigned char* buffer, int bufferSize, int width, int height, int ADDPIXELS);

@@ -15,14 +15,16 @@
 
 
 bool readFile (const char* filename, int& vertNum, int& edgeNum, std::vector <std::pair <int, int>> &edges);
-void setVertPos(std::vector <Vertex>& V, int maxWidth, int maxHeight, int vertNum);
+void setVertPos(std::vector <Vertex>& V, int size);
+void countFrame(Frame frame, int& width, int& height);
+int setSize(int vertNum);
 
 int main()
 {
-	const char* file = "sample.txt";
+	const char* file = "sample.txt";   // name of input file
 	std::vector <std::pair <int, int>> edges;
-	int vertNum = 0;
-	int edgeNum = 0;
+	int vertNum = 0;   // number of vertices
+	int edgeNum = 0;   // number of edges
 
 	// reading from file
 	if (!readFile(file, vertNum, edgeNum, edges)) {
@@ -31,24 +33,24 @@ int main()
 
 	std::vector <Vertex> vertPos(vertNum);
 
-	// setting arbitrary positions of vertices (must be a bit far from each other for good layout)
-	setVertPos(vertPos, 1500, 1500, vertNum);
+	// count size of graph
+	int size = setSize(vertNum);
+
+	// setting arbitrary positions of vertices
+	setVertPos(vertPos, size);
 
 	Frame frame;
-	// countong coordinates of vertices
-	FRmethod(vertPos, edges, 1500, 1500, 1500, 1500, frame);
+	// counting coordinates of vertices
+	FRmethod(vertPos, edges, size, frame);
 
 	// counting width and height of graph
-	int maxX = static_cast<int>(frame.maxX + 1);
-	int maxY = static_cast<int>(frame.maxY + 1);
-	int minX = static_cast<int>(frame.minX);
-	int minY = static_cast<int>(frame.minY);
-	int width = maxX - minX;
-	int height = maxY - minY;
+	int width = 0;
+	int height = 0;
+	countFrame(frame, width, height);
 
 	unsigned char* picture = drawGraph(edges, vertPos, width, height, ADDPIXELS);
 
-	makePicture("graphdesired1500.bmp", picture, width, height, ADDPIXELS);
+	makePicture("graph.bmp", picture, width, height, ADDPIXELS);
 
 	return 0;
 }
@@ -87,10 +89,28 @@ bool readFile(const char* filename, int& vertNum, int& edgeNum, std::vector<std:
 	return 1;
 }
 
-void setVertPos(std::vector<Vertex>& V, int maxWidth, int maxHeight, int vertNum)
+void setVertPos(std::vector<Vertex>& V, int size)
 {
-	for (int i = 0; i < vertNum; i++) {
-		V[i].x = static_cast<double>(rand() % maxWidth);
-		V[i].y = static_cast<double>(rand() % maxHeight);
+	for (int i = 0; i < V.size(); i++) {
+		V[i].x = static_cast<double>(rand() % size);
+		V[i].y = static_cast<double>(rand() % size);
 	}
+}
+
+void countFrame(Frame frame, int& width, int& height)
+{
+	int maxX = static_cast<int>(frame.maxX + 1);
+	int maxY = static_cast<int>(frame.maxY + 1);
+	int minX = static_cast<int>(frame.minX);
+	int minY = static_cast<int>(frame.minY);
+	width = maxX - minX;
+	height = maxY - minY;
+}
+
+int setSize(int vertNum)
+{
+	if (vertNum * 5 < 700) {
+		return 700;
+	}
+	return vertNum * 5;
 }

@@ -21,7 +21,7 @@ struct BITMAPINFOHEADER {
     int             biXPelsPerMeter = 0;   // horizontal resolution of the image
     int             biYPelsPerMeter = 0;   // vertical resolution of the image
     unsigned int    biClrUsed = 0;         // number of colors used (0 - use all colors)
-    unsigned int    biClrImportant = 0;    //  number of important colors used; 0 - all colors are important
+    unsigned int    biClrImportant = 0;    // number of important colors used; 0 - all colors are important
 };
 #pragma pack(pop)
 

@@ -3,10 +3,10 @@
 #include "Frame.h"
 
 #include <vector>
-#include<math.h>
+#include<cmath>
 
 
-void FRmethod(std::vector <Vertex>& vertices, const std::vector <std::pair <int, int>>& edges, int desiredWidth, int desiredHeight, int maxWidth, int maxHeight, Frame& frame);
+void FRmethod(std::vector <Vertex>& vertices, const std::vector <std::pair <int, int>>& edges, int size, Frame& frame);
 
 double attrForce(double k, double delta, double angle);
 
@@ -18,5 +18,6 @@ double minModule(double a, double b);
 
 double max(double a, double b);
 
-double cool(double& t, int ii, int iterations);
+double cool(double& t, double minTemp);
 
+void setParameters(size_t vertNum, double& C, double& gridRadius, double& maxTemp, double& minTemp);

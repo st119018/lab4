@@ -9,8 +9,8 @@ void makePicture(const char* filename, unsigned char* buffer, int width, int hei
 	std::ofstream graphPicture(filename, std::ofstream::binary);
 	BITMAPFILEHEADER Header{};
 	BITMAPINFOHEADER Info{};
-	Info.biWidth = width + ADDPIXELS * 2;
-	Info.biHeight = height + ADDPIXELS * 2;
+	Info.biWidth = width + ADDPIXELS * 2;   // count width of picture
+	Info.biHeight = height + ADDPIXELS * 2;  // count height of picture
 	int stride = ((Info.biWidth * 3 + 3) / 4) * 4;
 	Header.bfSize = 14 + Info.biSize + Info.biHeight * stride;
 	graphPicture.write(reinterpret_cast<char*>(&Header), sizeof(BITMAPFILEHEADER));
