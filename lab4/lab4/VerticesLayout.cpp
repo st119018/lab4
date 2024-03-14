@@ -1,10 +1,10 @@
 #include "VerticesLayout.h"
 
-void FRmethod(std::vector <Vertex>& vertices, const std::vector <std::pair <int, int>>& edges, int size, Frame& frame)
+void FRmethod(std::vector <Vertex>& vertices, const std::vector <std::pair <size_t, size_t>>& edges, int size, Frame& frame)
 {
 	size_t vertNum = vertices.size();
 
-	double C = 0.7;
+	double C = 0.8;
 	double gridRadius = 4;
 	double maxTemp = 3;
 	double minTemp = 20;
@@ -60,8 +60,8 @@ void FRmethod(std::vector <Vertex>& vertices, const std::vector <std::pair <int,
 		// calculate attractive forces between adjacent vertices
 		for (int i = 0; i < edges.size(); i++) {
 
-			int vertexNum1 = edges[i].first - 1;
-			int vertexNum2 = edges[i].second - 1;
+			size_t vertexNum1 = edges[i].first - 1;
+			size_t vertexNum2 = edges[i].second - 1;
 
 			// taking into account loops
 			if (vertexNum1 != vertexNum2) {
@@ -175,13 +175,13 @@ double cool(double& t, double minTemp)
 void setParameters(size_t vertNum, double& C, double& gridRadius, double& maxTemp, double& minTemp)
 {
 	if (vertNum > 500) {
-		C = 1;
+		C = 1.3;
 		gridRadius = 6;
 		maxTemp = 6;
 		minTemp = 50;
 	}
 	else if (vertNum <= 500 && vertNum > 300) {
-		C = 0.9;
+		C = 1.1;
 		gridRadius = 5;
 		maxTemp = 4;
 		minTemp = 40;

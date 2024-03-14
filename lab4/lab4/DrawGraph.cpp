@@ -1,7 +1,7 @@
 #include "DrawGraph.h"
 #include "Number.h"
 
-unsigned char* drawGraph(const std::vector<std::pair<int, int>>& edges, std::vector<Vertex>& vertices, int width, int height, const int ADDPIXELS)
+unsigned char* drawGraph(const std::vector<std::pair<size_t, size_t>>& edges, std::vector<Vertex>& vertices, int width, int height, const int ADDPIXELS)
 {
 	int stride = (((width + ADDPIXELS * 2) * 3 + 3) / 4) * 4;    // enlarged width in bytes, multiple of 4
 
@@ -70,13 +70,13 @@ void drawCircle(unsigned char* buffer, int x0, int y0, const int ADDPIXELS, int 
 }
 
 
-void drawEdges(unsigned char* buffer, std::vector <Vertex>& vertices, const  std::vector <std::pair <int, int>>& edges, int width, int height, int stride, const int ADDPIXELS, int bufferSize)
+void drawEdges(unsigned char* buffer, std::vector <Vertex>& vertices, const  std::vector <std::pair <size_t, size_t>>& edges, int width, int height, int stride, const int ADDPIXELS, int bufferSize)
 {
-	for (std::pair <int, int> edge : edges) {
-		int vertexNum1 = edge.first - 1;
+	for (std::pair <size_t, size_t> edge : edges) {
+		size_t vertexNum1 = edge.first - 1;
 		int x1 = static_cast<int>(vertices[vertexNum1].x);
 		int y1 = static_cast<int>(vertices[vertexNum1].y);
-		int vertexNum2 = edge.second - 1;
+		size_t vertexNum2 = edge.second - 1;
 		int x2 = static_cast<int>(vertices[vertexNum2].x);
 		int y2 = static_cast<int>(vertices[vertexNum2].y);
 

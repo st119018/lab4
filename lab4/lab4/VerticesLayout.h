@@ -6,7 +6,7 @@
 #include<cmath>
 
 
-void FRmethod(std::vector <Vertex>& vertices, const std::vector <std::pair <int, int>>& edges, int size, Frame& frame);
+void FRmethod(std::vector <Vertex>& vertices, const std::vector <std::pair <size_t, size_t>>& edges, int size, Frame& frame);
 
 double attrForce(double k, double delta, double angle);
 

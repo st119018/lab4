@@ -14,15 +14,15 @@
 
 
 
-bool readFile (const char* filename, int& vertNum, int& edgeNum, std::vector <std::pair <int, int>> &edges);
+bool readFile (const char* filename, int& vertNum, int& edgeNum, std::vector <std::pair <size_t, size_t>> &edges);
 void setVertPos(std::vector <Vertex>& V, int size);
 void countFrame(Frame frame, int& width, int& height);
 int setSize(int vertNum);
 
 int main()
 {
-	const char* file = "sample.txt";   // name of input file
-	std::vector <std::pair <int, int>> edges;
+	const char* file = "samplee.txt";   // name of input file; numbering of vertices starts from 1
+	std::vector <std::pair <size_t, size_t>> edges;
 	int vertNum = 0;   // number of vertices
 	int edgeNum = 0;   // number of edges
 
@@ -50,19 +50,19 @@ int main()
 
 	unsigned char* picture = drawGraph(edges, vertPos, width, height, ADDPIXELS);
 
-	makePicture("graph.bmp", picture, width, height, ADDPIXELS);
+	makePicture("graphe2.bmp", picture, width, height, ADDPIXELS);
 
 	return 0;
 }
 
-bool readFile(const char* filename, int& vertNum, int& edgeNum, std::vector<std::pair<int, int>> &edges)
+bool readFile(const char* filename, int& vertNum, int& edgeNum, std::vector<std::pair<size_t, size_t>> &edges)
 {
 	std::string line;
 
 	// opening file
 	std::ifstream input(filename, std::ios::in);
 	if (!input.is_open()) {
-		std::cerr << "File opening error." << std::endl;
+		std::cerr << "File opening error\n" << std::endl;
 		input.close();
 		return 0;
 	}
@@ -78,14 +78,23 @@ bool readFile(const char* filename, int& vertNum, int& edgeNum, std::vector<std:
 	for (int i = 0; i < edgeNum; i++) {
 		std::getline(input, line);
 		size_t pos = line.find(' ');
-		int vert1 = stoi(line.substr(0, pos));
-		int vert2 = stoi(line.substr(pos + 1, line.length() - (pos + 1)));
+		size_t vert1 = stoi(line.substr(0, pos));
+		size_t posEnd = line.length() - (pos + 1);
+		size_t posBeg = pos + 1;
+		size_t vert2 = stoi(line.substr(posBeg, posEnd));
+
+		if (vert1 >= 1 && vert2 >= 1){
 		edges.push_back({ vert1, vert2 });
+		}
+		else {
+			std::cerr << "Invalid vertex numbering\n";
+			input.close();
+			return 1;
+		}
 	}
 
 	// closing file
 	input.close();
-
 	return 1;
 }
 
