@@ -21,7 +21,7 @@ int setSize(int vertNum);
 
 int main()
 {
-	const char* file = "samplee.txt";   // name of input file; numbering of vertices starts from 1
+	const char* file = "sample.txt";   // name of input file; numbering of vertices starts from 1
 	std::vector <std::pair <size_t, size_t>> edges;
 	int vertNum = 0;   // number of vertices
 	int edgeNum = 0;   // number of edges
@@ -50,7 +50,7 @@ int main()
 
 	unsigned char* picture = drawGraph(edges, vertPos, width, height, ADDPIXELS);
 
-	makePicture("graphe2.bmp", picture, width, height, ADDPIXELS);
+	makePicture("graph.bmp", picture, width, height, ADDPIXELS);
 
 	return 0;
 }
