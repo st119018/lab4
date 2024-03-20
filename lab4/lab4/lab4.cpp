@@ -83,7 +83,7 @@ bool readFile(const char* filename, int& vertNum, int& edgeNum, std::vector<std:
 		size_t posBeg = pos + 1;
 		size_t vert2 = stoi(line.substr(posBeg, posEnd));
 
-		if (vert1 >= 1 && vert2 >= 1){
+		if (vert1 >= 1 && vert2 >= 1 && vert1 <= vertNum && vert2 <= vertNum){
 		edges.push_back({ vert1, vert2 });
 		}
 		else {
