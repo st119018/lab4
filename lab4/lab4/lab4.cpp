@@ -21,7 +21,7 @@ int setSize(int vertNum);
 
 int main()
 {
-	const char* file = "sample.txt";   // name of input file; numbering of vertices starts from 1
+	const char* file = "sample100.txt";   // name of input file; numbering of vertices starts from 1
 	std::vector <std::pair <size_t, size_t>> edges;
 	int vertNum = 0;   // number of vertices
 	int edgeNum = 0;   // number of edges
